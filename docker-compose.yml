@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  api1:
+    build: ./api1
+    ports:
+      - "8080:3000" # User request ไปที่ port 8080 ของ host, Map ไปที่ port 3000 ของ api1 container
+    environment:
+      PORT: 3000
+      API2_URL: http://api2:3001/api/data # ชื่อ service 'api2' ใน docker-compose และ port 3001 ที่ api2 listen อยู่
+    networks:
+      - app-network
+
+  api2:
+    build: ./api2
+    ports:
+      - "3001:3001" # สามารถเข้าถึงจากภายนอกได้ แต่หลักๆ คือให้ api1 เรียกใช้
+    environment:
+      PORT: 3001
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
